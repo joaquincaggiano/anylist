@@ -1,12 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { SignupInput } from 'src/auth/dto/inputs/signup.input';
 
 @Injectable()
 export class UsersService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async create(signupInput: SignupInput): Promise<User> {
+    try {
+      const newUser = this.userRepository.create(signupInput);
+      return await this.userRepository.save(newUser);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error creating user');
+    }
   }
 
   async findAll(): Promise<User[]> {

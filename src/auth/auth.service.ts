@@ -8,6 +8,11 @@ export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
   async signup(signupInput: SignupInput): Promise<AuthResponse> {
-    throw new Error('Not implemented');
+    const user = await this.usersService.create(signupInput);
+
+    // TODO: Generar token
+    const token = 'token';
+
+    return { user, token };
   }
 }

@@ -15,7 +15,7 @@ export class UpdateUserInput extends PartialType(SignupInput) {
   @IsOptional()
   roles?: ValidRoles[];
 
-  @Field(() => Boolean)
+  @Field(() => Boolean, { nullable: true, defaultValue: true })
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;

@@ -16,8 +16,8 @@ export class ItemsService {
     return await this.itemRepository.save(newItem);
   }
 
-  findAll() {
-    return `This action returns all items`;
+  async findAll(): Promise<Item[]> {
+    return await this.itemRepository.find();
   }
 
   findOne(id: number) {

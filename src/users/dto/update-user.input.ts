@@ -1,21 +1,22 @@
 import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
-import { IsArray, IsBoolean, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsArray, IsBoolean, IsIn, IsOptional, IsUUID } from 'class-validator';
 import { SignupInput } from 'src/auth/dto/inputs/signup.input';
+import { ValidRoles } from '../entities/user.entity';
 
 @InputType()
 export class UpdateUserInput extends PartialType(SignupInput) {
   @Field(() => ID)
   @IsUUID()
-  @IsNotEmpty()
   id: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   @IsArray()
-  @IsNotEmpty()
-  roles: string[];
+  @IsIn(Object.values(ValidRoles), { each: true })
+  @IsOptional()
+  roles?: ValidRoles[];
 
   @Field(() => Boolean)
   @IsBoolean()
-  @IsNotEmpty()
-  isActive: boolean;
+  @IsOptional()
+  isActive?: boolean;
 }

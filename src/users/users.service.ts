@@ -30,8 +30,15 @@ export class UsersService {
     throw new Error('Not implemented');
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
+    try {
+      const user = await this.findOne(id);
+      this.userRepository.merge(user, updateUserInput);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Error updating user');
+    }
   }
 
   async block(id: string): Promise<User> {

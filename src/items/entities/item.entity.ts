@@ -16,7 +16,7 @@ export class Item {
   @Field(() => Float)
   quantity: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  @Field(() => String)
-  quantityUnits: string; // ml, g, kg, etc.
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Field(() => String, { nullable: true })
+  quantityUnits?: string; // ml, g, kg, etc.
 }

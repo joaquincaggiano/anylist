@@ -13,11 +13,18 @@ export class UsersResolver {
     return this.usersService.findAll();
   }
 
-  @Query(() => User, { name: 'user' })
-  async findOne(
+  @Query(() => User, { name: 'findUserById' })
+  async findOneById(
     @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
   ): Promise<User> {
-    return this.usersService.findOne(id);
+    return this.usersService.findOneById(id);
+  }
+
+  @Query(() => User, { name: 'findUserByEmail' })
+  async findOneByEmail(
+    @Args('email', { type: () => String }) email: string,
+  ): Promise<User> {
+    return this.usersService.findOneByEmail(email);
   }
 
   @Mutation(() => User)

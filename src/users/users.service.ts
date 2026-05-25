@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -36,13 +37,39 @@ export class UsersService {
     return [];
   }
 
-  async findOne(id: string): Promise<User> {
-    throw new Error('Not implemented');
+  async findOneById(id: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
+      return user;
+    } catch (error) {
+      this.handleDBErrors({
+        code: 'error-001',
+        detail: `User with id ${id} not found`,
+      });
+    }
+  }
+
+  async findOneByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOneBy({ email });
+      if (!user) {
+        throw new NotFoundException(`User with email ${email} not found`);
+      }
+      return user;
+    } catch (error) {
+      this.handleDBErrors({
+        code: 'error-001',
+        detail: `User with email ${email} not found`,
+      });
+    }
   }
 
   async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
     try {
-      const user = await this.findOne(id);
+      const user = await this.findOneById(id);
       this.userRepository.merge(user, updateUserInput);
       return await this.userRepository.save(user);
     } catch (error) {
@@ -59,6 +86,8 @@ export class UsersService {
 
     if (error.code === '23505')
       throw new BadRequestException(error.detail.replace('Key ', ''));
+
+    if (error.code === 'error-001') throw new BadRequestException(error.detail);
 
     throw new InternalServerErrorException(
       'Unexpected error, check server logs',

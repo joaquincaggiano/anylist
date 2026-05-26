@@ -5,12 +5,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SignupInput } from 'src/auth/dto/inputs/signup.input';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserInput } from './dto/inputs/update-user.input';
 
 @Injectable()
 export class UsersService {

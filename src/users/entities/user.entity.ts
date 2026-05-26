@@ -1,10 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-export enum ValidRoles {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
-}
 
 @Entity({ name: 'users' })
 @ObjectType()

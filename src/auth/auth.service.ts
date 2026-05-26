@@ -4,6 +4,7 @@ import { UsersService } from 'src/users/users.service';
 import { LoginInput, SignupInput } from './dto/inputs';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -35,5 +36,17 @@ export class AuthService {
     const token = this.getJwtToken(user.id);
 
     return { user, token };
+  }
+
+  async validateUser(id: string): Promise<Omit<User, 'password'>> {
+    const user = await this.usersService.findOneById(id);
+
+    if (!user.isActive) {
+      throw new UnauthorizedException('User is not active');
+    }
+
+    const { password, ...userWithoutPassword } = user;
+
+    return userWithoutPassword;
   }
 }

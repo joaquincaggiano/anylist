@@ -49,4 +49,10 @@ export class AuthService {
 
     return userWithoutPassword;
   }
+
+  revalidateToken(user: User): AuthResponse {
+    const token = this.getJwtToken(user.id);
+
+    return { user, token };
+  }
 }

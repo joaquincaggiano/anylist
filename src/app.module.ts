@@ -8,7 +8,6 @@ import { ItemsModule } from './items/items.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [

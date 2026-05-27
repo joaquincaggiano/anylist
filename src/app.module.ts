@@ -8,6 +8,7 @@ import { ItemsModule } from './items/items.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -30,6 +31,25 @@ import { AuthModule } from './auth/auth.module';
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    // GraphQLModule.forRootAsync({
+    //   driver: ApolloDriver,
+    //   imports: [AuthModule],
+    //   inject: [JwtService],
+    //   useFactory: async (jwtService: JwtService) => {
+    //     return {
+    //       playground: false,
+    //       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    //       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+    //       context: ({ req, res }) => {
+    //         const token = req.headers.authorization?.replace('Bearer ', '');
+    //         if (!token) throw new Error('No token provided');
+
+    //         const payload = jwtService.decode(token);
+    //         if (!payload) throw new Error('Invalid token');
+    //       },
+    //     };
+    //   },
+    // }),
     ItemsModule,
     UsersModule,
     AuthModule,

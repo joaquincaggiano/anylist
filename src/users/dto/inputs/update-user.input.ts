@@ -9,13 +9,13 @@ export class UpdateUserInput extends PartialType(SignupInput) {
   @IsUUID()
   id: string;
 
-  @Field(() => [String], { nullable: true })
+  @Field(() => [ValidRoles], { nullable: true })
   @IsArray()
   @IsIn(Object.values(ValidRoles), { each: true })
   @IsOptional()
   roles?: ValidRoles[];
 
-  @Field(() => Boolean, { nullable: true, defaultValue: true })
+  @Field(() => Boolean, { nullable: true })
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;

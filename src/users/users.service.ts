@@ -78,10 +78,19 @@ export class UsersService {
     }
   }
 
-  async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
+  async update({
+    userId,
+    updateUserInput,
+    userLogged,
+  }: {
+    userId: string;
+    updateUserInput: UpdateUserInput;
+    userLogged: User;
+  }): Promise<User> {
     try {
-      const user = await this.findOneById(id);
+      const user = await this.findOneById(userId);
       this.userRepository.merge(user, updateUserInput);
+      user.lastUpdatedBy = userLogged;
       return await this.userRepository.save(user);
     } catch (error) {
       this.handleDBErrors(error);

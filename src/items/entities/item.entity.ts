@@ -28,7 +28,7 @@ export class Item {
   @Field(() => String, { nullable: true })
   quantityUnits?: string; // ml, g, kg, etc.
 
-  @ManyToOne(() => User, (user) => user.items, { nullable: false })
+  @ManyToOne(() => User, (user) => user.items, { nullable: false, lazy: true })
   @Index('userId-index')
   @JoinColumn({ name: 'userId' })
   @Field(() => User)

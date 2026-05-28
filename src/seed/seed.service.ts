@@ -1,10 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Item } from 'src/items/entities/item.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SeedService {
   private isProd: boolean;
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @InjectRepository(Item)
+    private readonly itemsRepository: Repository<Item>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+  ) {
     this.isProd = configService.get('STATE') === 'prod';
   }
 
@@ -12,6 +22,14 @@ export class SeedService {
     if (this.isProd) {
       throw new BadRequestException('We cannot run seed on production');
     }
+    // Purgamos la base de datos
+    await this.deleteDatabase();
+
     return true;
+  }
+
+  async deleteDatabase() {
+    await this.itemsRepository.createQueryBuilder().delete().execute();
+    await this.usersRepository.createQueryBuilder().delete().execute();
   }
 }

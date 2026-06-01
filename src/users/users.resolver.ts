@@ -82,7 +82,7 @@ export class UsersResolver {
   }
 
   @ResolveField(() => [Item], { name: 'items' })
-  async items(
+  async getItemsByUser(
     @CurrentUser([ValidRoles.ADMIN]) adminUser: User,
     @Parent() user: User,
     @Args() paginationArgs: PaginationArgs,

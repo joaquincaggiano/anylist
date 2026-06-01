@@ -12,7 +12,7 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
-import { ValidRolesArgs } from './dto/args/roles.args';
+import { FindUsersArgs } from './dto/args/find-users.args';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -30,11 +30,10 @@ export class UsersResolver {
 
   @Query(() => [User], { name: 'users' })
   async findAll(
-    @Args() validRoles: ValidRolesArgs,
-    @Args() paginationArgs: PaginationArgs,
+    @Args() args: FindUsersArgs,
     @CurrentUser([ValidRoles.ADMIN]) user: User,
   ): Promise<User[]> {
-    return this.usersService.findAll(validRoles.roles, paginationArgs);
+    return this.usersService.findAll(args.roles, args);
   }
 
   @Query(() => User, { name: 'findUserById' })

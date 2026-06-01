@@ -10,3 +10,4 @@
 4. Levantar la imagen con el comando `docker compose up -d`
 5. Levantar el backend de Nest con el comando `pnpm run start:dev`
 6. Visitar el sitio `localhost:3000/graphql`
+7. Ejecutar la **"mutation"** executeSeed, para llenar la base de datos con información

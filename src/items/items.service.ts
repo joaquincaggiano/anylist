@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateItemInput, UpdateItemInput } from './dto/inputs';
 import { Item } from './entities/item.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 
@@ -28,9 +28,8 @@ export class ItemsService {
       skip: offset,
       take: limit,
       where: {
-        user: {
-          id: user.id,
-        },
+        user: { id: user.id },
+        ...(search && { name: ILike(`%${search}%`) }),
       },
     });
   }

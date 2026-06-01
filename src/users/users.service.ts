@@ -7,11 +7,12 @@ import {
 } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArrayOverlap, Repository } from 'typeorm';
+import { ArrayOverlap, FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { SignupInput } from 'src/auth/dto/inputs/signup.input';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserInput } from './dto/inputs/update-user.input';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
+import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 
 @Injectable()
 export class UsersService {
@@ -34,14 +35,23 @@ export class UsersService {
     }
   }
 
-  async findAll(roles: ValidRoles[]): Promise<User[]> {
+  async findAll(
+    roles: ValidRoles[],
+    paginationArgs: PaginationArgs,
+  ): Promise<User[]> {
     try {
-      if (roles.length === 0) return await this.userRepository.find();
+      const { limit = 10, offset = 0, search } = paginationArgs;
+
+      const where: FindOptionsWhere<User> = {};
+
+      if (search) where.fullName = ILike(`%${search}%`);
+
+      if (roles.length > 0) where.roles = ArrayOverlap(roles);
 
       return await this.userRepository.find({
-        where: {
-          roles: ArrayOverlap(roles),
-        },
+        where,
+        skip: offset,
+        take: limit,
       });
     } catch (error) {
       this.handleDBErrors(error);

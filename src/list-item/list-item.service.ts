@@ -6,7 +6,7 @@ import { ILike, Repository } from 'typeorm';
 import { List } from 'src/lists/entities/list.entity';
 import { Item } from 'src/items/entities/item.entity';
 import { PaginationArgs } from 'src/common/dto/args/pagination.args';
-import { CreateListItemInput } from './dto/inputs';
+import { CreateListItemInput, UpdateListItemInput } from './dto/inputs';
 
 @Injectable()
 export class ListItemService {
@@ -71,5 +71,33 @@ export class ListItemService {
       throw new NotFoundException(`ListItem with id ${id} not found`);
     }
     return listItem;
+  }
+
+  async update(
+    id: string,
+    updateListItemInput: UpdateListItemInput,
+    user: User,
+  ): Promise<ListItem> {
+    await this.findOne(id, user);
+
+    const { itemId, listId, ...rest } = updateListItemInput;
+
+    const queryBuilder = this.listItemRepository
+      .createQueryBuilder('listItem')
+      .update()
+      .set(rest)
+      .where('id = :id', { id });
+
+    if (itemId) {
+      queryBuilder.set({ item: { id: itemId } });
+    }
+
+    if (listId) {
+      queryBuilder.set({ list: { id: listId } });
+    }
+
+    await queryBuilder.execute();
+
+    return this.findOne(id, user);
   }
 }

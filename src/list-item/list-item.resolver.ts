@@ -5,7 +5,7 @@ import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
-import { CreateListItemInput } from './dto/inputs';
+import { CreateListItemInput, UpdateListItemInput } from './dto/inputs';
 import { FindAllListItemsArgs } from './dto/args/find-all-list-items.args';
 
 @Resolver(() => ListItem)
@@ -37,5 +37,17 @@ export class ListItemResolver {
     @CurrentUser() user: User,
   ): Promise<ListItem> {
     return this.listItemService.findOne(id, user);
+  }
+
+  @Mutation(() => ListItem)
+  async updateListItem(
+    @Args('updateListItemInput') updateListItemInput: UpdateListItemInput,
+    @CurrentUser() user: User,
+  ): Promise<ListItem> {
+    return this.listItemService.update(
+      updateListItemInput.id,
+      updateListItemInput,
+      user,
+    );
   }
 }

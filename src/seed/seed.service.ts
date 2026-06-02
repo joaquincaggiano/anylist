@@ -7,6 +7,8 @@ import { Repository } from 'typeorm';
 import { SEED_ITEMS, SEED_USERS } from './data/seed-data';
 import { UsersService } from 'src/users/users.service';
 import { ItemsService } from 'src/items/items.service';
+import { ListItem } from 'src/list-item/entities/list-item.entity';
+import { List } from 'src/lists/entities/list.entity';
 
 @Injectable()
 export class SeedService {
@@ -17,6 +19,10 @@ export class SeedService {
     private readonly itemsRepository: Repository<Item>,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(ListItem)
+    private readonly listItemsRepository: Repository<ListItem>,
+    @InjectRepository(List)
+    private readonly listsRepository: Repository<List>,
     private readonly usersService: UsersService,
     private readonly itemsService: ItemsService,
   ) {
@@ -40,6 +46,8 @@ export class SeedService {
   }
 
   async deleteDatabase() {
+    await this.listItemsRepository.createQueryBuilder().delete().execute();
+    await this.listsRepository.createQueryBuilder().delete().execute();
     await this.itemsRepository.createQueryBuilder().delete().execute();
     await this.usersRepository.createQueryBuilder().delete().execute();
   }

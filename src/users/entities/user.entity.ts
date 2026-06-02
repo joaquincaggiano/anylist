@@ -1,6 +1,7 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 import { Item } from 'src/items/entities/item.entity';
+import { List } from 'src/lists/entities/list.entity';
 import {
   Column,
   Entity,
@@ -54,4 +55,9 @@ export class User {
   @JoinColumn({ name: 'items' })
   @Field(() => [Item])
   items: Item[];
+
+  @OneToMany(() => List, (list) => list.user)
+  @JoinColumn({ name: 'lists' })
+  @Field(() => [List])
+  lists: List[];
 }

@@ -2,12 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type List {
-  id: ID!
-  name: String!
-  user: User!
-}
-
 type User {
   id: ID!
   fullName: String!
@@ -21,12 +15,28 @@ type User {
   listCount: Int!
 }
 
+type List {
+  id: ID!
+  name: String!
+  user: User!
+  listItems: [ListItem!]!
+}
+
+type ListItem {
+  id: ID!
+  quantity: Int!
+  completed: Boolean!
+  list: List!
+  item: Item!
+}
+
 type Item {
   id: ID!
   name: String!
   quantityUnits: String
   category: String!
   user: User!
+  listItems: [ListItem!]!
 }
 
 type AuthResponse {
@@ -43,6 +53,7 @@ type Query {
   lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
   list(id: ID!): List!
   revalidateToken: AuthResponse!
+  listItem(id: Int!): ListItem!
 }
 
 """Valid roles for a user"""
@@ -64,6 +75,9 @@ type Mutation {
   signup(signupInput: SignupInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
   executeSeed: Boolean!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
+  updateListItem(updateListItemInput: UpdateListItemInput!): ListItem!
+  removeListItem(id: Int!): ListItem!
 }
 
 input CreateItemInput {
@@ -106,4 +120,15 @@ input SignupInput {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateListItemInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateListItemInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

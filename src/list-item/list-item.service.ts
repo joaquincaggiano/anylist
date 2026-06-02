@@ -62,4 +62,14 @@ export class ListItemService {
       where: { list: { id: listId } },
     });
   }
+
+  async findOne(id: string, user: User): Promise<ListItem> {
+    const listItem = await this.listItemRepository.findOne({
+      where: { id, list: { user: { id: user.id } } },
+    });
+    if (!listItem) {
+      throw new NotFoundException(`ListItem with id ${id} not found`);
+    }
+    return listItem;
+  }
 }

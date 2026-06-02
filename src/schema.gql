@@ -53,7 +53,8 @@ type Query {
   findUserByEmail(email: String!): User!
   lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
   list(id: ID!): List!
-  listItem(listId: ID!, offset: Int = 0, limit: Int = 10, search: String): [ListItem!]!
+  listItems(listId: ID!, offset: Int = 0, limit: Int = 10, search: String): [ListItem!]!
+  listItem(id: ID!): ListItem!
   revalidateToken: AuthResponse!
 }
 

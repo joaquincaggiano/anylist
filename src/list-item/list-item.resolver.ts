@@ -1,7 +1,7 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { ListItemService } from './list-item.service';
 import { ListItem } from './entities/list-item.entity';
-import { UseGuards } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
@@ -21,7 +21,7 @@ export class ListItemResolver {
     return this.listItemService.create(createListItemInput, user);
   }
 
-  @Query(() => [ListItem], { name: 'listItem' })
+  @Query(() => [ListItem], { name: 'listItems' })
   findAll(
     @Args() findAllListItemsArgs: FindAllListItemsArgs,
   ): Promise<ListItem[]> {
@@ -29,5 +29,13 @@ export class ListItemResolver {
       findAllListItemsArgs.listId,
       findAllListItemsArgs,
     );
+  }
+
+  @Query(() => ListItem, { name: 'listItem' })
+  async findOne(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser() user: User,
+  ): Promise<ListItem> {
+    return this.listItemService.findOne(id, user);
   }
 }

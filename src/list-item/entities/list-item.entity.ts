@@ -8,9 +8,11 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 
 @Entity({ name: 'listItems' })
+@Unique('listItem-item', ['list', 'item'])
 @ObjectType()
 export class ListItem {
   @PrimaryGeneratedColumn('uuid')

@@ -30,6 +30,6 @@ export class List {
 
   @OneToMany(() => ListItem, (listItem) => listItem.list, { lazy: true })
   @JoinColumn({ name: 'listItems' })
-  @Field(() => [ListItem])
+  // @Field(() => [ListItem])
   listItems: ListItem[];
 }

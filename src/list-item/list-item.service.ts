@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateListItemInput } from './dto/create-list-item.input';
-import { UpdateListItemInput } from './dto/update-list-item.input';
 import { User } from 'src/users/entities/user.entity';
 import { ListItem } from './entities/list-item.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { List } from 'src/lists/entities/list.entity';
 import { Item } from 'src/items/entities/item.entity';
+import { PaginationArgs } from 'src/common/dto/args/pagination.args';
+import { CreateListItemInput } from './dto/inputs';
 
 @Injectable()
 export class ListItemService {
@@ -44,21 +44,22 @@ export class ListItemService {
     return await this.listItemRepository.save(listItem);
   }
 
-  async findAll(listId: string): Promise<ListItem[]> {
+  async findAll(
+    listId: string,
+    paginationArgs: PaginationArgs,
+  ): Promise<ListItem[]> {
+    const { limit = 10, offset = 0, search } = paginationArgs;
     return await this.listItemRepository.find({
+      skip: offset,
+      take: limit,
       where: { list: { id: listId } },
+      ...(search && { item: { name: ILike(`%${search}%`) } }),
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} listItem`;
-  }
-
-  update(id: number, updateListItemInput: UpdateListItemInput) {
-    return `This action updates a #${id} listItem`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} listItem`;
+  async countListItemsByList(listId: string): Promise<number> {
+    return await this.listItemRepository.count({
+      where: { list: { id: listId } },
+    });
   }
 }

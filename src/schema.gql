@@ -19,7 +19,8 @@ type List {
   id: ID!
   name: String!
   user: User!
-  items: [ListItem!]!
+  items(offset: Int = 0, limit: Int = 10, search: String): [ListItem!]!
+  totalItems: Int!
 }
 
 type ListItem {
@@ -52,7 +53,7 @@ type Query {
   findUserByEmail(email: String!): User!
   lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
   list(id: ID!): List!
-  listItem: [ListItem!]!
+  listItem(listId: ID!, offset: Int = 0, limit: Int = 10, search: String): [ListItem!]!
   revalidateToken: AuthResponse!
 }
 
